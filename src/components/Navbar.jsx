@@ -18,73 +18,89 @@ const LINKS = [
 export default function Navbar() {
   const [open, setOpen] = useState(false)
   const [mega, setMega] = useState(false)
+  const [megaMobile, setMegaMobile] = useState(false) // <- NUEVO
   const [scrolled, setScrolled] = useState(false)
   const { pathname } = useLocation()
 
-  useEffect(() => { setOpen(false); setMega(false) }, [pathname])
+  useEffect(() => { setOpen(false); setMega(false); setMegaMobile(false) }, [pathname])
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 10)
     onScroll()
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
-  useEffect(() => { document.body.style.overflow = open ? 'hidden' : '' }, [open])
+  useEffect(() => {
+    document.body.style.overflow = open? 'hidden' : ''
+    return () => { document.body.style.overflow = '' }
+  }, [open])
 
   return (
-    <header className={`nav ${scrolled ? 'nav--scrolled' : ''}`}>
-      <div className="nav__bar container">
-        <Logo />
+    <>
+      <header className={`nav ${scrolled? 'nav--scrolled' : ''}`}>
+        <div className="nav__bar container">
+          <Logo />
 
-        <nav className="nav__links" aria-label="Principal">
-          {LINKS.map((l) =>
-            l.mega ? (
-              <div key={l.to} className="nav__item" onMouseEnter={() => setMega(true)} onMouseLeave={() => setMega(false)}>
-                <NavLink to={l.to} className={({ isActive }) => `nav__link ${isActive || pathname.startsWith('/moto') ? 'is-active' : ''}`}
-                  aria-expanded={mega} onFocus={() => setMega(true)}>
-                  {l.label} <IconChevron width={14} height={14} />
+          <nav className="nav__links" aria-label="Principal">
+            {LINKS.map((l) =>
+              l.mega? (
+                <div key={l.to} className="nav__item" onMouseEnter={() => setMega(true)} onMouseLeave={() => setMega(false)}>
+                  <NavLink to={l.to} className={({ isActive }) => `nav__link ${isActive || pathname.startsWith('/moto')? 'is-active' : ''}`}>
+                    {l.label} <IconChevron width={14} height={14} />
+                  </NavLink>
+                  <MegaMenu visible={mega} />
+                </div>
+              ) : (
+                <NavLink key={l.to} to={l.to} end={l.end} className={({ isActive }) => `nav__link ${isActive? 'is-active' : ''}`}>
+                  {l.label}
                 </NavLink>
-                <MegaMenu visible={mega} />
+              )
+            )}
+          </nav>
+
+          <a className="btn btn--red btn--sm nav__cta" href={waLink('Hola, quiero cotizar una moto Hero en Palmira.')} target="_blank" rel="noreferrer">
+            <IconWhatsApp width={18} height={18} /> Cotizar
+          </a>
+
+          <button className="nav__burger" onClick={() => setOpen(!open)} aria-label={open? 'Cerrar menú' : 'Abrir menú'} aria-expanded={open}>
+            {open? <IconClose /> : <IconMenu />}
+          </button>
+        </div>
+      </header>
+
+      {/* Menú móvil - AHORA FUERA DEL HEADER */}
+      <div className={`drawer ${open? 'is-open' : ''}`} onClick={() => setOpen(false)}>
+        <nav className="drawer__inner" aria-label="Móvil" onClick={(e) => e.stopPropagation()}>
+          <div className="drawer__top">
+            <Logo />
+            <button className="nav__burger" onClick={() => setOpen(false)}><IconClose /></button>
+          </div>
+
+          {LINKS.map((l) => (
+            <div key={l.to} className="drawer__row">
+              <div className="drawer__row-main">
+                <NavLink to={l.to} end={l.end} className={({ isActive }) => `drawer__link ${isActive? 'is-active' : ''}`}>
+                  {l.label}
+                </NavLink>
               </div>
-            ) : (
-              <NavLink key={l.to} to={l.to} end={l.end} className={({ isActive }) => `nav__link ${isActive ? 'is-active' : ''}`}>
-                {l.label}
-              </NavLink>
-            )
-          )}
-        </nav>
 
-        <a className="btn btn--red btn--sm nav__cta" href={waLink('Hola, quiero cotizar una moto Hero en Palmira.')} target="_blank" rel="noreferrer">
-          <IconWhatsApp width={18} height={18} /> Cotizar
-        </a>
-
-        <button className="nav__burger" onClick={() => setOpen(!open)} aria-label={open ? 'Cerrar menú' : 'Abrir menú'} aria-expanded={open}>
-          {open ? <IconClose /> : <IconMenu />}
-        </button>
-      </div>
-
-      {/* Menú móvil */}
-      <div className={`drawer ${open ? 'is-open' : ''}`}>
-        <nav className="drawer__inner" aria-label="Móvil">
-          {LINKS.map((l, i) => (
-            <div key={l.to} style={{ '--i': i }} className="drawer__row">
-              <NavLink to={l.to} end={l.end} className={({ isActive }) => `drawer__link ${isActive ? 'is-active' : ''}`}>
-                {l.label}
-              </NavLink>
-              {l.mega && (
+              {l.mega && megaMobile && (
                 <div className="drawer__cats">
                   {CATEGORIAS.map((c) => (
-                    <Link key={c.id} to={`/motos/${c.id}`}>{c.nombre}</Link>
+                    <Link key={c.id} to={`/motos/${c.id}`} className="drawer__cat-link">
+                      {c.nombre} <small>({motosDe(c.id).length})</small>
+                    </Link>
                   ))}
+                  <Link to="/motos" className="drawer__all">Ver todo el portafolio</Link>
                 </div>
               )}
             </div>
           ))}
-          <a className="btn btn--red" href={waLink('Hola, quiero cotizar una moto Hero en Palmira.')} target="_blank" rel="noreferrer">
+          <a className="btn btn--red drawer__cta" href={waLink('Hola, quiero cotizar una moto Hero en Palmira.')} target="_blank" rel="noreferrer">
             <IconWhatsApp /> Cotizar por WhatsApp
           </a>
         </nav>
       </div>
-    </header>
+    </>
   )
 }
 
@@ -93,12 +109,12 @@ function MegaMenu({ visible }) {
   const cat = CATEGORIAS.find((c) => c.id === hover)
   const destacada = getMoto(cat.destacada)
   return (
-    <div className={`mega ${visible ? 'is-visible' : ''}`}>
+    <div className={`mega ${visible? 'is-visible' : ''}`}>
       <div className="mega__inner">
         <ul className="mega__cats">
           {CATEGORIAS.map((c) => (
             <li key={c.id}>
-              <Link to={`/motos/${c.id}`} onMouseEnter={() => setHover(c.id)} className={hover === c.id ? 'is-on' : ''}>
+              <Link to={`/motos/${c.id}`} onMouseEnter={() => setHover(c.id)} className={hover === c.id? 'is-on' : ''}>
                 <span>{c.nombre}</span>
                 <small>{motosDe(c.id).length} modelos</small>
               </Link>
@@ -124,3 +140,4 @@ function MegaMenu({ visible }) {
     </div>
   )
 }
+

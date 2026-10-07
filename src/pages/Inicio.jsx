@@ -5,66 +5,83 @@ import { SITIO, waLink } from '../data/sitio.js'
 import { IconArrow, IconShield, IconCard, IconWrench, IconBox, IconWhatsApp } from '../components/Icons.jsx'
 import useReveal from '../components/useReveal.js'
 
-const SLIDES = CATEGORIAS.map((c) => ({ cat: c, moto: getMoto(c.destacada) }))
-const DURACION = 6500
+const BANNERS = [
+  "/brand/1M-BannerWeb-Horizontal2.png",
+  "/brand/Banner-Desktop_Flow-Xpulse-Pro-2.0.png",
+  "/brand/llantasMichellinDektop.jpg"
+];
+const MS_BANNER = 4000;
 
 export default function Inicio() {
-  const [i, setI] = useState(0)
+  const [b, setB] = useState(0)
   const [pausa, setPausa] = useState(false)
   useReveal()
 
   useEffect(() => {
     if (pausa) return
-    const t = setTimeout(() => setI((i + 1) % SLIDES.length), DURACION)
+    const t = setTimeout(() => setB((v) => (v + 1) % BANNERS.length), MS_BANNER)
     return () => clearTimeout(t)
-  }, [i, pausa])
+  }, [b, pausa])
 
-  const { cat, moto } = SLIDES[i]
+  const prev = () => setB((v) => (v - 1 + BANNERS.length) % BANNERS.length)
+  const next = () => setB((v) => (v + 1) % BANNERS.length)
 
   return (
     <>
-      {/* ───── HERO SLIDER ───── */}
-      <section className="hero" onMouseEnter={() => setPausa(true)} onMouseLeave={() => setPausa(false)}>
-        <div className="hero__bg" aria-hidden="true">
-          <span className="hero__ghost" key={moto.slug}>{moto.nombre.split(' ')[0]}</span>
-        </div>
-        <div className="container hero__inner">
-          <div className="hero__copy" key={`c-${i}`}>
-            <span className="kicker">{cat.nombre} · {SITIO.ciudad}</span>
-            <h1 className="display display--xl">{moto.nombre}</h1>
-            <p className="hero__lema">{moto.lema}</p>
-            <div className="hero__specs">
-              <div><b>{moto.resumen.cc}</b><small>cc</small></div>
-              <div><b>{moto.resumen.hp}</b><small>hp</small></div>
-              <div><b>{moto.resumen.nm}</b><small>Nm</small></div>
-            </div>
-            <div className="hero__price">
-              <small>Desde</small>
-              <strong>{cop(precioFinal(moto))}*</strong>
-            </div>
-            <div className="hero__ctas">
-              <Link to={`/moto/${moto.slug}`} className="btn btn--red">Conoce la {moto.nombre} <IconArrow /></Link>
-              <Link to={`/motos/${cat.id}`} className="btn btn--ghost">Ver {cat.nombre.toLowerCase()}</Link>
-            </div>
-          </div>
-          <div className="hero__media" key={`m-${i}`}>
-            <div className="hero__disc" aria-hidden="true" />
-            <img src={img(moto)} alt={moto.nombre} />
-          </div>
-        </div>
+      <section 
+        className="home-carousel" 
+        onMouseEnter={() => setPausa(true)} 
+        onMouseLeave={() => setPausa(false)}
+        style={{ 
+          position:"relative", 
+          width:"100%",
+          height:"calc(100vh - 72px)",
+          minHeight:480,
+          overflow:"hidden", 
+          background:"#fff", // FIX: era #000 y por eso se veía negro
+          marginLeft:"calc(50% - 50vw)",
+          marginRight:"calc(50% - 50vw)",
+        }}
+      >
+        {BANNERS.map((src, k) => (
+          <img
+            key={src}
+            src={src}
+            alt={`Banner ${k+1}`}
+            loading={k === 0 ? "eager" : "lazy"}
+            onError={(e) => console.error('Falta esta imagen en /public:', src)}
+            style={{
+              position:"absolute", inset:0,
+              width:"100%", height:"100%", 
+              objectFit:"cover",
+              objectPosition:"center center",
+              opacity: k === b ? 1 : 0,
+              transition:"opacity 600ms ease",
+              backgroundColor: "#fff"
+            }}
+          />
+        ))}
 
-        <div className="container hero__tabs" role="tablist" aria-label="Categorías destacadas">
-          {SLIDES.map((s, k) => (
-            <button key={s.cat.id} role="tab" aria-selected={k === i} className={`hero__tab ${k === i ? 'is-on' : ''}`} onClick={() => setI(k)}>
-              <span className="hero__tabnum">0{k + 1}</span>
-              <span className="hero__tablabel">{s.cat.nombre}</span>
-              <span className="hero__bar"><span style={{ animationDuration: `${DURACION}ms`, animationPlayState: pausa ? 'paused' : 'running' }} /></span>
-            </button>
+        <button onClick={prev} aria-label="Anterior" style={{ position:"absolute", left:16, top:"50%", transform:"translateY(-50%)", zIndex:3, background:"rgba(0,0,0,.4)", border:0, color:"#fff", width:44, height:44, borderRadius:"50%", cursor:"pointer", fontSize:24 }}>‹</button>
+        <button onClick={next} aria-label="Siguiente" style={{ position:"absolute", right:16, top:"50%", transform:"translateY(-50%)", zIndex:3, background:"rgba(0,0,0,.4)", border:0, color:"#fff", width:44, height:44, borderRadius:"50%", cursor:"pointer", fontSize:24 }}>›</button>
+
+        <div style={{ position:"absolute", bottom:32, left:"50%", transform:"translateX(-50%)", display:"flex", gap:8, zIndex:3 }}>
+          {BANNERS.map((_, k) => (
+            <button
+              key={k}
+              onClick={() => setB(k)}
+              aria-label={`Ir a banner ${k+1}`}
+              style={{
+                width: k === b ? 28 : 8, height:8, borderRadius:99, border:0,
+                background: k === b ? "#111" : "rgba(0,0,0,.3)",
+                transition:"all 300ms", cursor:"pointer"
+              }}
+            />
           ))}
         </div>
       </section>
 
-      {/* ───── CATEGORÍAS ───── */}
+      {/* ... lo demás igual ... */}
       <section className="section">
         <div className="container">
           <div className="section__head reveal">
@@ -95,7 +112,6 @@ export default function Inicio() {
         </div>
       </section>
 
-      {/* ───── BENEFICIOS ───── */}
       <section className="perks">
         <div className="container perks__grid">
           <div className="perks__intro reveal">

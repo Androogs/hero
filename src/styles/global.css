@@ -106,7 +106,7 @@ input, select, textarea { font: inherit; }
 .nav__link.is-active { color: #6e727b; }
 .nav__link.is-active::after, .nav__link:hover::after { transform: scaleX(1) skewX(-25deg); }
 .nav__cta { flex-shrink: 0; }
-.nav__burger { display: none; margin-left: auto; background: none; border: 0; color: #fff; padding: 8px; }
+.nav__burger { display: none; margin-left: auto; background: none; border: 0; color: #111111; padding: 8px; }
 
 /* Mega menú */
 .mega { position: absolute; left: 0; right: 0; top: 100%; background: #fff; color: var(--ink); box-shadow: 0 30px 60px -20px rgba(0,0,0,.35);
@@ -134,9 +134,31 @@ input, select, textarea { font: inherit; }
 .mega__feature img { position: relative; margin-top: 6px; }
 
 /* Drawer móvil */
-.drawer { position: fixed; inset: var(--nav-h) 0 0; background: var(--ink); transform: translateX(100%); transition: transform .4s var(--ease); overflow-y: auto; }
+/* .drawer { position: fixed; inset: var(--nav-h) 0 0; background: var(--ink); transform: translateX(100%); transition: transform .4s var(--ease); overflow-y: auto; }
 .drawer.is-open { transform: none; }
 .drawer__inner { padding: 24px 20px 40px; display: flex; flex-direction: column; gap: 4px; }
+ */
+ .drawer { 
+  position: fixed; 
+  inset: var(--nav-h, 72px) 0 0 0; /* fallback por si la variable no carga */
+  z-index: 9999; /* <- ESTO TE FALTABA */
+  background: var(--ink); 
+  transform: translateX(100%); 
+  transition: transform .4s var(--ease); 
+  overflow-y: auto; 
+  pointer-events: none; /* <- evita clicks cuando está cerrado */
+}
+.drawer.is-open { 
+  transform: translateX(0); 
+  pointer-events: auto;
+}
+.drawer__inner { 
+  padding: 24px 20px 40px; 
+  display: flex; 
+  flex-direction: column; 
+  gap: 4px; 
+  min-height: 100%;
+}
 .drawer__row { opacity: 0; transform: translateX(20px); transition: .4s var(--ease); transition-delay: calc(var(--i) * 40ms + 100ms); border-bottom: 1px solid var(--ink-3); }
 .drawer.is-open .drawer__row { opacity: 1; transform: none; }
 .drawer__link { display: block; padding: 14px 0; font-family: var(--f-display); font-style: italic; font-weight: 800; text-transform: uppercase; font-size: 2rem; color: #fff; }
@@ -379,7 +401,7 @@ input, select, textarea { font: inherit; }
 .calc__out div { display: flex; justify-content: space-between; align-items: baseline; border-bottom: 1px solid var(--ink-3); padding-bottom: 8px; }
 .calc__out small { color: var(--gray-400); }
 .calc__out b { font-family: var(--f-display); font-style: italic; font-size: 1.5rem; }
-.calc__out .is-red b { color: #ff4d6a; font-size: 1.9rem; }
+.calc__out .is-red b { color: var(--red); font-size: 1.9rem; }
 .fin__right { position: sticky; top: calc(var(--nav-h) + 20px); }
 .aliados { margin-top: 16px; padding: 16px 20px; border-radius: var(--radius); border: 1px dashed var(--gray-200); font-size: .85rem; color: var(--gray-500); }
 .aliados ul { margin: 6px 0 0; padding-left: 18px; }
