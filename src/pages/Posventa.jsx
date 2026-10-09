@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import { MOTOS } from '../data/motos.js'
-import { SITIO } from '../data/sitio.js'
+import { SITIO, waLink } from '../data/sitio.js'
 import PageHero from '../components/PageHero.jsx'
 import LeadForm from '../components/LeadForm.jsx'
-import { IconWrench, IconBox, IconShield, IconCalendar, IconCheck } from '../components/Icons.jsx'
+import { IconWrench, IconBox, IconShield, IconCalendar, IconCheck, IconWhatsApp } from '../components/Icons.jsx'
+import { useSede } from '../components/SedeProvider.jsx'
 
 const SECCIONES = {
   taller: {
@@ -26,9 +27,14 @@ const SECCIONES = {
 
 export default function Posventa() {
   const { hash } = useLocation()
+  const { sede } = useSede()
   const [tab, setTab] = useState('taller')
   useEffect(() => { const h = hash.replace('#', ''); if (SECCIONES[h]) setTab(h) }, [hash])
   const s = SECCIONES[tab]
+  const numeroServicio = tab === 'taller' || tab === 'repuestos' ? sede[tab] : null
+  const mensajeServicio = tab === 'taller'
+    ? `Hola, quiero comunicarme con el taller de ${sede.nombre}.`
+    : `Hola, quiero consultar por repuestos en ${sede.nombre}.`
 
   return (
     <>
@@ -51,7 +57,17 @@ export default function Posventa() {
               <h2 className="display">{s.titulo}</h2>
               <p>{s.texto}</p>
               <ul className="features">{s.items.map((i) => <li key={i}><IconCheck /> {i}</li>)}</ul>
-              <a className="link-arrow" href={SITIO.sitioMarca} target="_blank" rel="noreferrer">Plan de mantenimiento y políticas oficiales en heromotos.com.co →</a>
+              {numeroServicio && (
+                <a
+                  className="btn btn--red pv__contact-cta"
+                  href={waLink(mensajeServicio, numeroServicio.wa)}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <IconWhatsApp />
+                  Contactar {tab === 'taller' ? 'taller' : 'repuestos'} · {numeroServicio.label}
+                </a>
+              )}
             </div>
           </div>
           <aside className="pv__side">

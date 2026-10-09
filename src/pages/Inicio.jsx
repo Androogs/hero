@@ -11,7 +11,7 @@ const BANNERS = [
   "/brand/Banner-Desktop_Flow-Xpulse-Pro-2.0.png",
   "/brand/llantasMichellinDektop.jpg"
 ];
-const MS_BANNER = 4000;
+const MS_BANNER = 2500;
 
 export default function Inicio() {
   const { sede } = useSede()
@@ -40,7 +40,7 @@ export default function Inicio() {
           height:"calc(100vh - 72px)",
           minHeight:480,
           overflow:"hidden", 
-          background:"#fff", // FIX: era #000 y por eso se veía negro
+          background:"#fff", 
           marginLeft:"calc(50% - 50vw)",
           marginRight:"calc(50% - 50vw)",
         }}
@@ -83,7 +83,6 @@ export default function Inicio() {
         </div>
       </section>
 
-      {/* ... lo demás igual ... */}
       <section className="section">
         <div className="container">
           <div className="section__head reveal">
