@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { SITIO } from '../data/sitio.js'
+import { useSede } from './SedeProvider.jsx'
 
   // Logo del concesionario.
   //  Para usar el logo oficial Hero (suministrado por HMCL Colombia),
@@ -7,12 +7,13 @@ import { SITIO } from '../data/sitio.js'
   
 
 export default function Logo({ onClick }) {
+  const { sede } = useSede()
   return (
     <Link
       to="/"
       className="logo"
       onClick={onClick}
-      aria-label={`${SITIO.nombreComercial} – inicio`}
+      aria-label={`${sede.nombre} – inicio`}
     >
       <img
         className="logo__image"

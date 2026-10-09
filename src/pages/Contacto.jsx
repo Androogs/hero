@@ -1,15 +1,20 @@
-import { SITIO, waLink } from '../data/sitio.js'
+import { SITIO, waLink, waClickHandler } from '../data/sitio.js'
 import { MOTOS } from '../data/motos.js'
 import PageHero from '../components/PageHero.jsx'
 import LeadForm from '../components/LeadForm.jsx'
 import { IconWhatsApp, IconPhone, IconMail, IconPin } from '../components/Icons.jsx'
+import { useSede } from '../components/SedeProvider.jsx'
 
 export default function Contacto() {
+  const { sede, abrirSelector } = useSede()
+  const mensajeVentas = `Hola, necesito información de ${sede.nombre}.`
   const canales = [
-    { i: <IconWhatsApp />, t: 'WhatsApp', v: 'Escríbenos ahora', href: waLink('Hola, necesito información.') },
-    { i: <IconPhone />, t: 'Teléfono', v: SITIO.telefono, href: `tel:${SITIO.telefonoLink}` },
+    { i: <IconWhatsApp />, t: 'Asesores de ventas', v: sede.asesores.map(({ label }) => label).join(' · '), href: waLink(mensajeVentas), onClick: waClickHandler(mensajeVentas) },
+    { i: <IconWhatsApp />, t: 'Taller', v: sede.taller.label, href: waLink(`Hola, necesito información del taller de ${sede.nombre}.`, sede.taller.wa), onClick: waClickHandler(`Hola, necesito información del taller de ${sede.nombre}.`, 'taller') },
+    { i: <IconWhatsApp />, t: 'Repuestos', v: sede.repuestos.label, href: waLink(`Hola, necesito información sobre repuestos de ${sede.nombre}.`, sede.repuestos.wa), onClick: waClickHandler(`Hola, necesito información sobre repuestos de ${sede.nombre}.`, 'repuestos') },
+    { i: <IconPhone />, t: 'Teléfono', v: sede.asesores[0].label, href: `tel:${sede.asesores[0].link}` },
     { i: <IconMail />, t: 'Correo', v: SITIO.email, href: `mailto:${SITIO.email}` },
-    { i: <IconPin />, t: 'Visítanos', v: SITIO.ciudad, href: '/concesionario' },
+    { i: <IconPin />, t: 'Visítanos', v: sede.direccion, href: '/concesionario' },
   ]
   return (
     <>
@@ -20,16 +25,17 @@ export default function Contacto() {
         <div className="container contact">
           <div className="contact__channels">
             {canales.map((c) => (
-              <a key={c.t} href={c.href} target={c.href.startsWith('http') ? '_blank' : undefined} rel="noreferrer" className="channel">
+              <a key={c.t} href={c.href} onClick={c.onClick} target={c.href.startsWith('http') ? '_blank' : undefined} rel="noreferrer" className="channel">
                 <span className="channel__icon">{c.i}</span>
                 <span><small>{c.t}</small><b>{c.v}</b></span>
               </a>
             ))}
+            <button className="contact__change-sede" type="button" onClick={abrirSelector}>Cambiar sede: {sede.nombre}</button>
           </div>
           <div className="contact__form">
             <LeadForm
               titulo="Envíanos tu mensaje"
-              asunto="Contacto web – Hero Palmira"
+              asunto="Contacto web"
               fields={[
                 { name: 'nombre', label: 'Nombre completo', required: true },
                 { name: 'celular', label: 'Celular', type: 'tel', required: true },

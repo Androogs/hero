@@ -4,6 +4,7 @@ import { CATEGORIAS, MOTOS, getCategoria, getMoto, img, precioFinal } from '../d
 import MotoCard from '../components/MotoCard.jsx'
 import PageHero from '../components/PageHero.jsx'
 import { IconCompare, IconSearch, IconClose } from '../components/Icons.jsx'
+import { useSede } from '../components/SedeProvider.jsx'
 
 const ORDEN = {
   destacado: { label: 'Destacados', fn: () => 0 },
@@ -13,6 +14,7 @@ const ORDEN = {
 }
 
 export default function Motos() {
+  const { sede } = useSede()
   const { categoria } = useParams()
   const cat = categoria ? getCategoria(categoria) : null
   const [orden, setOrden] = useState('destacado')
@@ -39,7 +41,7 @@ export default function Motos() {
         crumbs={cat ? [{ label: 'Motos', to: '/motos' }, { label: cat.nombre }] : [{ label: 'Motos' }]}
         image={img(hero)}
       >
-        <p>{cat ? cat.descripcion : 'Todo el portafolio Hero disponible en nuestro concesionario de Palmira. Elige tu categoría, compara y cotiza.'}</p>
+        <p>{cat ? cat.descripcion : `Todo el portafolio Hero disponible en nuestro concesionario de ${sede.ciudad}. Elige tu categoría, compara y cotiza.`}</p>
       </PageHero>
 
       <section className="section section--tight">

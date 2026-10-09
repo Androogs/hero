@@ -2,8 +2,9 @@ import { useEffect, useState } from 'react'
 import { Link, NavLink, useLocation } from 'react-router-dom'
 import Logo from './Logo.jsx'
 import { CATEGORIAS, getMoto, img, motosDe } from '../data/motos.js'
-import { waLink } from '../data/sitio.js'
-import { IconChevron, IconMenu, IconClose, IconWhatsApp, IconArrow } from './Icons.jsx'
+import { SITIO, waLink, waClickHandler } from '../data/sitio.js'
+import { IconChevron, IconMenu, IconClose, IconWhatsApp, IconArrow, IconPin, IconMail } from './Icons.jsx'
+import { useSede } from './SedeProvider.jsx'
 
 const LINKS = [
   { to: '/', label: 'Inicio', end: true },
@@ -21,6 +22,8 @@ export default function Navbar() {
   const [megaMobile, setMegaMobile] = useState(false) // <- NUEVO
   const [scrolled, setScrolled] = useState(false)
   const { pathname } = useLocation()
+  const { sede, abrirSelector } = useSede()
+  const mensajeCotizar = `Hola, quiero cotizar una moto Hero en ${sede.ciudad}.`
 
   useEffect(() => { setOpen(false); setMega(false); setMegaMobile(false) }, [pathname])
   useEffect(() => {
@@ -37,6 +40,19 @@ export default function Navbar() {
   return (
     <>
       <header className={`nav ${scrolled? 'nav--scrolled' : ''}`}>
+        <div className="nav__topbar">
+          <div className="container nav__topbar-inner">
+            <div className="nav__location">
+              <IconPin width={16} height={16} />
+              <span>{sede.direccion}</span>
+              <button type="button" onClick={abrirSelector}>Cambiar sede</button>
+            </div>
+            <a className="nav__email" href={`mailto:${SITIO.email}`}>
+              <IconMail width={16} height={16} />
+              <span>{SITIO.email}</span>
+            </a>
+          </div>
+        </div>
         <div className="nav__bar container">
           <Logo />
 
@@ -57,7 +73,7 @@ export default function Navbar() {
             )}
           </nav>
 
-          <a className="btn btn--red btn--sm nav__cta" href={waLink('Hola, quiero cotizar una moto Hero en Palmira.')} target="_blank" rel="noreferrer">
+          <a className="btn btn--red btn--sm nav__cta" href={waLink(mensajeCotizar)} onClick={waClickHandler(mensajeCotizar)} target="_blank" rel="noreferrer">
             <IconWhatsApp width={18} height={18} /> Cotizar
           </a>
 
@@ -95,7 +111,7 @@ export default function Navbar() {
               )}
             </div>
           ))}
-          <a className="btn btn--red drawer__cta" href={waLink('Hola, quiero cotizar una moto Hero en Palmira.')} target="_blank" rel="noreferrer">
+          <a className="btn btn--red drawer__cta" href={waLink(mensajeCotizar)} onClick={waClickHandler(mensajeCotizar)} target="_blank" rel="noreferrer">
             <IconWhatsApp /> Cotizar por WhatsApp
           </a>
         </nav>
@@ -140,4 +156,3 @@ function MegaMenu({ visible }) {
     </div>
   )
 }
-

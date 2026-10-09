@@ -1,13 +1,15 @@
 import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { getMoto, getCategoria, img, cop, precioFinal, motosDe } from '../data/motos.js'
-import { SITIO, waLink } from '../data/sitio.js'
+import { SITIO, waLink, waClickHandler } from '../data/sitio.js'
 import MotoCard from '../components/MotoCard.jsx'
 import LeadForm from '../components/LeadForm.jsx'
 import { IconWhatsApp, IconCard, IconCompare, IconCheck, IconEngine, IconBolt, IconGauge, IconDrop, IconShield } from '../components/Icons.jsx'
 import NoEncontrado from './NoEncontrado.jsx'
+import { useSede } from '../components/SedeProvider.jsx'
 
 export default function MotoDetalle() {
+  const { sede } = useSede()
   const { slug } = useParams()
   const moto = getMoto(slug)
   const [color, setColor] = useState(moto?.colores[0].id)
@@ -17,7 +19,7 @@ export default function MotoDetalle() {
   const cat = getCategoria(moto.categoria)
   const colorObj = moto.colores.find((c) => c.id === color) || moto.colores[0]
   const otras = motosDe(moto.categoria).filter((m) => m.slug !== moto.slug).slice(0, 3)
-  const msg = `Hola, quiero cotizar la ${moto.nombre} en color ${colorObj.nombre}.`
+  const msg = `Hola, quiero cotizar la ${moto.nombre} en color ${colorObj.nombre} en ${sede.nombre}.`
 
   return (
     <>
@@ -67,7 +69,7 @@ export default function MotoDetalle() {
             </div>
 
             <div className="pdp__ctas">
-              <a className="btn btn--red btn--block" href={waLink(msg)} target="_blank" rel="noreferrer"><IconWhatsApp /> Cotizar por WhatsApp</a>
+              <a className="btn btn--red btn--block" href={waLink(msg)} onClick={waClickHandler(msg)} target="_blank" rel="noreferrer"><IconWhatsApp /> Cotizar por WhatsApp</a>
               <div className="pdp__ctas2">
                 <Link className="btn btn--outline" to={`/financiacion?moto=${moto.slug}`}><IconCard /> Financiar</Link>
                 <Link className="btn btn--outline" to={`/comparar?m=${moto.slug}`}><IconCompare /> Comparar</Link>
@@ -108,7 +110,7 @@ export default function MotoDetalle() {
       <section className="section section--gray">
         <div className="container pdp__bottom">
           <div className="pdp__testride">
-            <span className="kicker kicker--red">Pruébala en Palmira</span>
+            <span className="kicker kicker--red">Pruébala en {sede.ciudad}</span>
             <h2 className="display">Agenda tu prueba de manejo</h2>
             <p>Ven al concesionario, conoce la {moto.nombre} en persona y resuelve todas tus dudas con un asesor.</p>
             <LeadForm

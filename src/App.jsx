@@ -12,13 +12,14 @@ import Posventa from './pages/Posventa.jsx'
 import Concesionario from './pages/Concesionario.jsx'
 import Contacto from './pages/Contacto.jsx'
 import NoEncontrado from './pages/NoEncontrado.jsx'
+import { SedeProvider } from './components/SedeProvider.jsx'
 
 export default function App() {
   const { pathname } = useLocation()
   useEffect(() => { window.scrollTo({ top: 0, behavior: 'instant' }) }, [pathname])
 
   return (
-    <>
+    <SedeProvider>
       <Navbar />
       <main key={pathname} className="page-enter">
         <Routes>
@@ -36,6 +37,6 @@ export default function App() {
       </main>
       <Footer />
       <WhatsAppFab />
-    </>
+    </SedeProvider>
   )
 }

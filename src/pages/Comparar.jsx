@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { MOTOS, CATEGORIAS, getMoto, img, cop, precioFinal } from '../data/motos.js'
-import { waLink } from '../data/sitio.js'
+import { waLink, waClickHandler } from '../data/sitio.js'
 import PageHero from '../components/PageHero.jsx'
 import { IconWhatsApp, IconClose } from '../components/Icons.jsx'
 
@@ -79,7 +79,7 @@ export default function Comparar() {
                 <div className="cmp__label" />
                 {slots.map((k) => (
                   <div key={k} className="cmp__cell">
-                    {motos[k] && <a className="btn btn--red btn--sm" href={waLink(`Hola, quiero cotizar la ${motos[k].nombre}.`)} target="_blank" rel="noreferrer"><IconWhatsApp width={16} /> Cotizar</a>}
+                    {motos[k] && <a className="btn btn--red btn--sm" href={waLink(`Hola, quiero cotizar la ${motos[k].nombre}.`)} onClick={waClickHandler(`Hola, quiero cotizar la ${motos[k].nombre}.`)} target="_blank" rel="noreferrer"><IconWhatsApp width={16} /> Cotizar</a>}
                   </div>
                 ))}
               </div>

@@ -57,8 +57,9 @@ export default function Posventa() {
           <aside className="pv__side">
             <div className="pv__sidehead"><IconCalendar /> <span>Agenda tu cita de taller</span></div>
             <LeadForm
-              asunto="Cita de taller – Hero Palmira"
+              asunto="Cita de taller"
               boton="Agendar cita"
+              tipoContacto="taller"
               fields={[
                 { name: 'nombre', label: 'Nombre', required: true, full: true },
                 { name: 'celular', label: 'Celular', type: 'tel', required: true },

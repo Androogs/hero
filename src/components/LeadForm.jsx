@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { waLink } from '../data/sitio.js'
+import { getSede, waLink, nextWhatsappNumber } from '../data/sitio.js'
 import { IconWhatsApp, IconCheck } from './Icons.jsx'
 
 /**
@@ -9,7 +9,7 @@ import { IconWhatsApp, IconCheck } from './Icons.jsx'
  *
  * fields: [{ name, label, type: 'text'|'tel'|'email'|'select'|'textarea'|'date', options?, required?, full? }]
  */
-export default function LeadForm({ titulo, fields, asunto, boton = 'Enviar por WhatsApp', initial = {} }) {
+export default function LeadForm({ titulo, fields, asunto, boton = 'Enviar por WhatsApp', initial = {}, tipoContacto = 'asesor' }) {
   const [data, setData] = useState(initial)
   const [acepta, setAcepta] = useState(false)
   const [enviado, setEnviado] = useState(false)
@@ -20,7 +20,14 @@ export default function LeadForm({ titulo, fields, asunto, boton = 'Enviar por W
   const enviar = (e) => {
     e.preventDefault()
     const lineas = fields.map((f) => `• ${f.label}: ${data[f.name] || '—'}`).join('\n')
-    window.open(waLink(`*${asunto}*\n${lineas}`), '_blank', 'noopener')
+    const solicitud = `${data.servicio || ''} ${data.interes || ''}`
+    const tipoServicio = /repuesto/i.test(solicitud)
+      ? 'repuestos'
+      : /taller|mantenimiento/i.test(solicitud)
+        ? 'taller'
+        : tipoContacto
+    const mensaje = `*${asunto} – ${getSede().nombre}*\n${lineas}`
+    window.open(waLink(mensaje, nextWhatsappNumber(tipoServicio)), '_blank', 'noopener')
     setEnviado(true)
   }
 

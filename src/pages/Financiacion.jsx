@@ -3,6 +3,7 @@ import { useSearchParams } from 'react-router-dom'
 import { MOTOS, CATEGORIAS, getMoto, img, cop, precioFinal } from '../data/motos.js'
 import PageHero from '../components/PageHero.jsx'
 import LeadForm from '../components/LeadForm.jsx'
+import { useSede } from '../components/SedeProvider.jsx'
 
 /**
  * NOTA: no se muestran tasas ni cuotas mensuales porque dependen de la entidad
@@ -15,10 +16,11 @@ const PASOS = [
   { t: 'Elige tu Hero', d: 'Escoge el modelo y color que más te guste en nuestro portafolio.' },
   { t: 'Envía tus datos', d: 'Déjanos tus datos básicos y un asesor te contacta por WhatsApp.' },
   { t: 'Estudio de crédito', d: 'Radicamos tu solicitud con la entidad aliada y te informamos la respuesta.' },
-  { t: 'Estrena', d: 'Firmas, matriculamos y te entregamos tu moto en Palmira.' },
+  { t: 'Estrena', d: 'Firmas, matriculamos y te entregamos tu moto en la sede que elegiste.' },
 ]
 
 export default function Financiacion() {
+  const { sede } = useSede()
   const [params] = useSearchParams()
   const [slug, setSlug] = useState(getMoto(params.get('moto'))?.slug || 'hunk-160r-4v')
   const [inicial, setInicial] = useState(20)
@@ -37,7 +39,7 @@ export default function Financiacion() {
           <div className="fin__left">
             <ol className="steps">
               {PASOS.map((p, k) => (
-                <li key={p.t}><span>0{k + 1}</span><div><h3>{p.t}</h3><p>{p.d}</p></div></li>
+                <li key={p.t}><span>0{k + 1}</span><div><h3>{p.t}</h3><p>{p.t === 'Estrena' ? `Firmas, matriculamos y te entregamos tu moto en ${sede.ciudad}.` : p.d}</p></div></li>
               ))}
             </ol>
 
@@ -76,7 +78,7 @@ export default function Financiacion() {
           <aside className="fin__right">
             <LeadForm
               titulo="Solicita tu estudio de crédito"
-              asunto="Solicitud de crédito – Hero Palmira"
+              asunto="Solicitud de crédito"
               boton="Solicitar crédito"
               initial={{ moto: moto.nombre, inicial: cop(cuotaIni) }}
               fields={[

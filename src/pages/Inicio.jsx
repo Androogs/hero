@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { CATEGORIAS, MOTOS, getMoto, img, cop, precioFinal, motosDe } from '../data/motos.js'
-import { SITIO, waLink } from '../data/sitio.js'
+import { SITIO, waLink, waClickHandler } from '../data/sitio.js'
 import { IconArrow, IconShield, IconCard, IconWrench, IconBox, IconWhatsApp } from '../components/Icons.jsx'
 import useReveal from '../components/useReveal.js'
+import { useSede } from '../components/SedeProvider.jsx'
 
 const BANNERS = [
   "/brand/1M-BannerWeb-Horizontal2.png",
@@ -13,6 +14,7 @@ const BANNERS = [
 const MS_BANNER = 4000;
 
 export default function Inicio() {
+  const { sede } = useSede()
   const [b, setB] = useState(0)
   const [pausa, setPausa] = useState(false)
   useReveal()
@@ -115,9 +117,9 @@ export default function Inicio() {
       <section className="perks">
         <div className="container perks__grid">
           <div className="perks__intro reveal">
-            <span className="kicker">¿Por qué Hero Palmira?</span>
+            <span className="kicker">¿Por qué {sede.nombre}?</span>
             <h2 className="display">Tu moto, tu taller y tus repuestos en un solo lugar</h2>
-            <a className="btn btn--red" href={waLink('Hola, quiero agendar una visita al concesionario Hero Palmira.')} target="_blank" rel="noreferrer">
+            <a className="btn btn--red" href={waLink(`Hola, quiero agendar una visita a ${sede.nombre}.`)} onClick={waClickHandler(`Hola, quiero agendar una visita a ${sede.nombre}.`)} target="_blank" rel="noreferrer">
               <IconWhatsApp /> Agenda tu visita
             </a>
           </div>

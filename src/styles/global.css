@@ -86,6 +86,14 @@ input, select, textarea { font: inherit; }
 .nav { position: sticky; top: 0; z-index: 50; background: rgba(#ffffff); backdrop-filter: saturate(160%) blur(14px); color: #111111; transition: box-shadow .3s; }
 .nav::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 3px; background: linear-gradient(90deg, var(--red) 0 30%, transparent 30%); }
 .nav--scrolled { box-shadow: 0 8px 30px rgba(0,0,0,.35); }
+.nav__topbar { background: var(--ink); color: #fff; border-bottom: 2px solid var(--red); }
+.nav__topbar-inner { min-height: 38px; display: flex; align-items: center; justify-content: space-between; gap: 20px; font-size: .78rem; }
+.nav__location, .nav__email { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.nav__location svg, .nav__email svg { flex: 0 0 auto; color: var(--red); }
+.nav__location > span, .nav__email > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.nav__location button { flex: 0 0 auto; padding: 4px 0 4px 8px; border: 0; background: none; color: #fff; font-size: inherit; font-weight: 800; }
+.nav__location button:hover, .nav__email:hover { color: var(--red); }
+.nav__email { color: #e3e5e9; }
 .nav__bar { height: var(--nav-h); display: flex; align-items: center; gap: 28px; }
 .logo { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
 .logo__mark { width: 42px; height: 42px; border-radius: 11px; background: var(--red); display: grid; place-items: center; color: #fff; transform: skewX(-8deg); }
@@ -470,6 +478,29 @@ input, select, textarea { font: inherit; }
 .footer__legal { border-top: 1px solid var(--ink-3); margin-top: 40px; padding-top: 20px; font-size: .75rem; color: #7d8088; display: grid; gap: 4px; }
 .footer__legal p { margin: 0; }
 .footer__legal a { text-decoration: underline; }
+.footer__change-sede, .contact__change-sede, .sede-dialog__cancel {
+  margin-top: 14px; padding: 0; color: inherit; background: none; border: 0; text-decoration: underline;
+  font-size: .88rem; text-align: left;
+}
+.footer__change-sede { color: #b9bbc0; }
+.contact__change-sede { color: var(--red); }
+
+/* ---------- Selector de sede ---------- */
+.sede-overlay {
+  position: fixed; inset: 0; z-index: 100; display: grid; place-items: center; padding: 20px;
+  background: rgba(0, 0, 0, .72); backdrop-filter: blur(5px);
+}
+.sede-dialog {
+  width: min(100%, 520px); padding: clamp(24px, 5vw, 40px); border-radius: var(--radius);
+  background: #fff; box-shadow: 0 24px 80px rgba(0, 0, 0, .35);
+}
+.sede-dialog h2 { font-size: clamp(2rem, 6vw, 3rem); }
+.sede-dialog p { color: var(--gray-500); margin: 0 0 22px; }
+.sede-dialog form { display: grid; gap: 16px; }
+.sede-dialog .field { display: grid; gap: 8px; }
+.sede-dialog .field span { font-size: .82rem; font-weight: 700; }
+.sede-dialog select { width: 100%; min-height: 48px; padding: 10px 12px; border: 1px solid var(--gray-200); border-radius: var(--radius-sm); background: #fff; }
+.sede-dialog__cancel { justify-self: center; margin-top: 0; color: var(--gray-500); }
 
 /* ---------- WhatsApp flotante ---------- */
 .fab { position: fixed; right: 20px; bottom: 20px; z-index: 40; width: 58px; height: 58px; border-radius: 50%; background: #25d366; color: #fff; display: grid; place-items: center; box-shadow: 0 12px 30px -8px rgba(37,211,102,.7); transition: transform .25s var(--ease); }
@@ -499,6 +530,11 @@ input, select, textarea { font: inherit; }
 @media (max-width: 760px) {
   :root { --nav-h: 66px; }
   .container { width: calc(100% - 32px); }
+  .nav__topbar-inner { min-height: 36px; gap: 8px; font-size: .7rem; }
+  .nav__email { display: none; }
+  .nav__location { flex: 1; }
+  .nav__location > span { flex: 1; }
+  .nav__location button { padding-left: 4px; }
   .logo__text small { display: none; }
   .hero { min-height: auto; }
   .hero__bg::before { width: 70%; right: -30%; top: 38%; }

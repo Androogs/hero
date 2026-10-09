@@ -3,14 +3,16 @@ import Logo from './Logo.jsx'
 import { CATEGORIAS } from '../data/motos.js'
 import { SITIO } from '../data/sitio.js'
 import { IconFacebook, IconInstagram, IconTiktok, IconPin, IconPhone, IconMail } from './Icons.jsx'
+import { useSede } from './SedeProvider.jsx'
 
 export default function Footer() {
+  const { sede, abrirSelector } = useSede()
   return (
     <footer className="footer">
       <div className="container footer__grid">
         <div className="footer__brand">
           <Logo />
-          <p>Concesionario autorizado Hero Motos en {SITIO.ciudad}. Venta, financiación, taller y repuestos originales.</p>
+          <p>Concesionario autorizado Hero Motos en {sede.ciudad}. Venta, financiación, taller y repuestos originales.</p>
           <div className="footer__social">
             <a href={SITIO.redes.facebook} target="_blank" rel="noreferrer" aria-label="Facebook"><IconFacebook /></a>
             <a href={SITIO.redes.instagram} target="_blank" rel="noreferrer" aria-label="Instagram"><IconInstagram /></a>
@@ -33,10 +35,11 @@ export default function Footer() {
         <div>
           <h4>Visítanos</h4>
           <ul className="footer__contact">
-            <li><IconPin width={16} height={16} /> {SITIO.direccion}</li>
-            <li><IconPhone width={16} height={16} /> <a href={`tel:${SITIO.telefonoLink}`}>{SITIO.telefonoLink}</a></li>
+            <li><IconPin width={16} height={16} /> {sede.direccion}</li>
+            <li><IconPhone width={16} height={16} /> <a href={`tel:${sede.asesores[0].link}`}>{sede.asesores[0].label}</a></li>
             <li><IconMail width={16} height={16} /> <a href={`mailto:${SITIO.email}`}>{SITIO.email}</a></li>
           </ul>
+          <button className="footer__change-sede" type="button" onClick={abrirSelector}>Cambiar sede ({sede.nombre})</button>
         </div>
       </div>
       <div className="footer__legal container">
